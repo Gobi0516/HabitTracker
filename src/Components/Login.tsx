@@ -1,12 +1,18 @@
 import React,{useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TextInput, Button, StyleSheet,Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../Type/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList,'Register'>;
 const LogIn = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  
+ 
   const handleLogin = async() => {
     try {
       const savedEmail = await AsyncStorage.getItem('userEmail');
@@ -17,6 +23,7 @@ const LogIn = () => {
       } else {
         Alert.alert('Invalid email or password');
       }
+      navigation.navigate('AddHabit');
     } catch (error) {
       Alert.alert('Error reading data');
     }

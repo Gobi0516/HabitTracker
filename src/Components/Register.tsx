@@ -1,6 +1,10 @@
 import React,{useState} from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../Type/types'; 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 
 
 const styles = StyleSheet.create({
@@ -24,27 +28,34 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
-
+type NavigationProp = NativeStackNavigationProp<RootStackParamList,'Register'>;
 const Register = () => {
+  const navigation = useNavigation<NavigationProp>();
  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [ConfirmPassword, setConfirmPassword] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false);
-
+ 
   const handleRegister = async () => {
-    if (!email || !password) {
-      Alert.alert('Please fill all fields');
-      return;
-    }
+   
 
     try {
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
       Alert.alert('Registration Successful!');
-      setIsRegistering(false);
+
+      if (password !== ConfirmPassword) {
+        Alert.alert('Passwords do not match!');
+        return;
+      }
+      // Reset the form fields after successful registration
+
+     
+     
       setEmail('');
       setPassword('');
+      setConfirmPassword('');
+        navigation.navigate ('Login' );
     } catch (error) {
       Alert.alert('Error saving data');
     }
